@@ -41,7 +41,7 @@ export default function CataloguePage() {
   const [image, setImage] = useState<File | null>(null); // État pour l'image
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/catalogue')
+    fetch('https://ppexclusive-server.vercel.app/api/catalogue')
       .then((res) => res.json())
       .then((data: CatalogueItem[]) => {
         setCatalogueItems(data);
@@ -70,7 +70,7 @@ export default function CataloguePage() {
       formData.append('image', image); // Ajouter l'image au formData
     }
 
-    const response = await fetch('http://localhost:5000/api/catalogue', {
+    const response = await fetch('https://ppexclusive-server.vercel.app/api/catalogue', {
       method: 'POST',
       body: formData,
     });
@@ -100,7 +100,7 @@ export default function CataloguePage() {
   };
 
   const handleDeleteItem = async (num: number) => {
-    const response = await fetch(`http://localhost:5000/api/catalogue/${num}`, {
+    const response = await fetch(`https://ppexclusive-server.vercel.app/api/catalogue/${num}`, {
       method: 'DELETE',
     });
 
