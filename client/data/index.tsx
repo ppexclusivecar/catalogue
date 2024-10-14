@@ -12,7 +12,7 @@ export const cataloguecards = [
     {
       index: 1,
       description: "2021",
-      title: "Peugeot Partner FOURGON STANDARD 1000 KG BLUEHDI 100 S&S BVM5 GARANTIE",
+      title: "Peugeot Partner",
       src: "/assets/peugeotpartner.png",
       ctaText: "Plus d'infos",
       ctaLink: "https://www.leboncoin.fr/ad/utilitaires/2856473110",
@@ -37,7 +37,7 @@ export const cataloguecards = [
     {
       index: 2,
       description: "2019",
-      title: "Volkswagen Golf 7 GTI 2.0 TSI 245 ch DSG7 PERFORMANCE GARANTIE 12 MOIS",
+      title: "Volkswagen Golf 7",
       src: "/assets/golf7gti.png",
       ctaText: "Plus d'infos",
       ctaLink: "https://www.leboncoin.fr/ad/voitures/2852284999",
@@ -62,7 +62,7 @@ export const cataloguecards = [
     {
       index: 3,
       description: "2015",
-      title: "Land Rover Range Rover Vogue 3.0 TDV6 LIMITED Garantie 12 Mois",
+      title: "Range Rover",
       src: "/assets/rangerover.png",
       ctaText: "Plus d'infos",
       ctaLink: "https://www.leboncoin.fr/ad/voitures/2843624103",
@@ -87,7 +87,7 @@ export const cataloguecards = [
     {
       index: 5,
       description: "2022",
-      title: "AUDI Q8 60 TFSI e 462 Tiptronic 8 Quattro Compétition GARANTIE Constructeur",
+      title: "AUDI Q8",
       src: "/assets/audiq8.png",
       ctaText: "Plus d'infos",
       ctaLink: "https://www.leboncoin.fr/ad/voitures/2860525119",
