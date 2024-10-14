@@ -13,7 +13,6 @@ export default function Home() {
         <Hero/>
         <Testimonials/>
         <Footer/>
-        <Backend/>
       </div>
     </main>
   );

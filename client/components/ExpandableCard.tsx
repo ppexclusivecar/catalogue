@@ -156,15 +156,15 @@ export function ExpandableCard() {
             onClick={() => setActive(card)}
             className="p-4 flex flex-col  hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
           >
-            <div className="flex gap-4 flex-col  w-full">
-              <motion.div layoutId={`image-${card.title}-${id}`}>
-                <img
-                    width={500}  // Taille par défaut
-                    height={300} // Taille par défaut
-                    src={card.src}
-                    alt={card.title}
-                    className="w-full h-60 rounded-lg object-cover object-top"
-                />
+          <div className="flex gap-4 flex-col w-full">
+            <motion.div layoutId={`image-${card.title}-${id}`} className="w-11/12 max-w-[375px]">
+              <img
+                width={375}  // Réduction de 25% de la taille par défaut
+                height={225} // Réduction correspondante
+                src={card.src}
+                alt={card.title}
+                className="rounded-lg object-cover object-top"
+              />
               </motion.div>
               <div className="flex justify-center items-center flex-col">
                 <motion.h3
