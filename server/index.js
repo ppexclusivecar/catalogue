@@ -11,6 +11,9 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Servir les fichiers statiques du dossier 'public'
+app.use('/public', express.static('public'));
+
 // Route racine
 app.get('/', (req, res) => {
   res.send('Bienvenue sur le backend Express!');
@@ -23,7 +26,6 @@ app.get('/api/hello', (req, res) => {
 
 app.post('/api/data', (req, res) => {
   const data = req.body;
-  // Traitez vos données ici
   res.json({ message: 'Données reçues', data });
 });
 

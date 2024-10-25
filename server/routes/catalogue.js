@@ -9,7 +9,7 @@ const db = require('../db');
 // Configuration de multer pour l'upload des images
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../../public/assets/uploads/')); // Dossier de destination
+    cb(null, path.join(__dirname, '../public/uploads/')); // Dossier de destination
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname)); // Renommer le fichier pour éviter les doublons
@@ -35,7 +35,6 @@ router.post('/', upload.single('image'), (req, res) => {
   const {
     nom,
     description,
-    ctaText,
     ctaLink,
     brand,
     model,
@@ -53,14 +52,13 @@ router.post('/', upload.single('image'), (req, res) => {
 
   const query = `
     INSERT INTO catalogue (
-      Nom, Description, CtaText, CtaLink, Brand, Model, Price, Kilometers, Color, Fuel, Gearbox, Engine, Doors, Year, Image
+      Nom, Description, CtaLink, Brand, Model, Price, Kilometers, Color, Fuel, Gearbox, Engine, Doors, Year, Image
     ) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   const values = [
     nom,
     description,
-    ctaText,
     ctaLink,
     brand,
     model,
@@ -86,7 +84,6 @@ router.post('/', upload.single('image'), (req, res) => {
       insertedId: results.insertId,
       Nom: nom,
       Description: description,
-      CtaText: ctaText,
       CtaLink: ctaLink,
       Brand: brand,
       Model: model,
@@ -116,7 +113,7 @@ router.delete('/:num', (req, res) => {
     }
 
     if (results.length > 0) {
-      const imagePath = path.join(__dirname, '../../public/assets/uploads/', results[0].Image);
+      const imagePath = path.join(__dirname, '../public/uploads/', results[0].Image);
 
       // Supprimer l'élément de la base de données
       const deleteQuery = 'DELETE FROM catalogue WHERE Num = ?';
