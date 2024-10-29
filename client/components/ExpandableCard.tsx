@@ -2,12 +2,40 @@
 import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
-import {cataloguecards} from "@/data";
-import { FaCar, FaCarSide, FaChair, FaDoorClosed, FaEuroSign, FaGasPump, FaGears, FaPaintRoller, FaSitemap } from "react-icons/fa6";
+import { FaCar, FaCarSide, FaDoorClosed, FaEuroSign, FaGasPump, FaGears, FaPaintRoller, FaSitemap } from "react-icons/fa6";
 import { FaHistory, FaTachometerAlt } from "react-icons/fa";
  
+interface CatalogueItem {
+  Num: number;
+  Description: string;
+  Nom: string;
+  CtaLink: string;
+  Brand: string;
+  Model: string;
+  Price: string;
+  Kilometers: string;
+  Color: string;
+  Fuel: string;
+  Gearbox: string;
+  Engine: string;
+  Doors: string;
+  Year: string;
+  Image: string;
+}
+
 export function ExpandableCard() {
-  const [active, setActive] = useState<(typeof cataloguecards)[number] | boolean | null>(
+  const [catalogueItems, setCatalogueItems] = useState<CatalogueItem[]>([]);
+
+  useEffect(() => {
+    fetch('https://ppexclusive-server.vercel.app/api/catalogue')
+      .then((res) => res.json())
+      .then((data: CatalogueItem[]) => {
+        setCatalogueItems(data);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  const [active, setActive] = useState<(typeof catalogueItems)[number] | boolean | null>(
     null
   );
   const id = useId();
@@ -48,7 +76,7 @@ export function ExpandableCard() {
         {active && typeof active === "object" ? (
           <div className="fixed inset-0  grid place-items-center z-[100] ">
             <motion.button
-              key={`button-${active.title}-${id}`}
+              key={`button-${active.Nom}-${id}`}
               layout
               initial={{
                 opacity: 0,
@@ -68,16 +96,16 @@ export function ExpandableCard() {
               <CloseIcon />
             </motion.button>
             <motion.div
-              layoutId={`card-${active.title}-${id}`}
+              layoutId={`card-${active.Nom}-${id}`}
               ref={ref}
               className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-auto"
             >
-              <motion.div layoutId={`image-${active.title}-${id}`}>
+              <motion.div layoutId={`image-${active.Nom}-${id}`}>
                 <img
                   width={200}
                   height={200}
-                  src={active.src}
-                  alt={active.title}
+                  src={active.Image}
+                  alt={active.Nom}
                   className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-cover object-top"
                 />
               </motion.div>
@@ -86,16 +114,16 @@ export function ExpandableCard() {
                 <div className="flex justify-between items-start p-4">
                   <div className="">
                     <motion.h3
-                      layoutId={`title-${active.title}-${id}`}
+                      layoutId={`title-${active.Nom}-${id}`}
                       className="font-medium text-neutral-700 dark:text-neutral-200 text-base"
                     >
-                      {active.title}
+                      {active.Nom}
                     </motion.h3>
                     <motion.p
-                      layoutId={`description-${active.description}-${id}`}
+                      layoutId={`description-${active.Description}-${id}`}
                       className="text-neutral-600 dark:text-neutral-400 text-base"
                     >
-                      {active.description}
+                      {active.Year}
                     </motion.p>
                   </div>
  
@@ -104,11 +132,11 @@ export function ExpandableCard() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    href={active.ctaLink}
+                    href={active.CtaLink}
                     target="_blank"
                     className="px-4 py-3 text-sm rounded-full font-bold bg-yellow-500 text-white"
                   >
-                    {active.ctaText}
+                    {'Plus'}
                   </motion.a>
                 </div>
                 <div className="pt-4 relative px-4">
@@ -119,27 +147,25 @@ export function ExpandableCard() {
                     exit={{ opacity: 0 }}
                     className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
                   >
-                    {typeof active.content === "function"
-                      ? active.content()
-                      : active.content}
-                      <div className="flex justify-center w-full pb-10">
-                        <div className="flex w-full">
-                          <div className="flex-1 mr-5">
-                            <p className="flex items-center"><FaCar className="mr-1"/> Marque: <span className="text-yellow-500 ml-1">{active.brand}</span> </p>
-                            <p className="flex items-center"><FaCarSide className="mr-1"/>Modèle: <span className="text-yellow-500 ml-1">{active.model}</span> </p>
-                            <p className="flex items-center"><FaEuroSign className="mr-1"/>Prix: <span className="text-yellow-500 ml-1">{active.price}</span> </p>
-                            <p className="flex items-center"><FaTachometerAlt className="mr-1"/>Kilométrage: <span className="text-yellow-500 ml-1">{active.kilometers}</span> </p>
-                            <p className="flex items-center"><FaPaintRoller className="mr-1"/>Couleur: <span className="text-yellow-500 ml-1">{active.color}</span> </p>
-                          </div>
-                          <div className="flex-1">
-                          <p className="flex items-center"><FaGasPump className="mr-1"/>Carburant: <span className="text-yellow-500 ml-1">{active.fuel}</span> </p>
-                          <p className="flex items-center"><FaSitemap className="mr-1"/>Boite: <span className="text-yellow-500 ml-1">{active.gearbox}</span> </p>
-                          <p className="flex items-center"><FaGears className="mr-1"/>Moteur: <span className="text-yellow-500 ml-1">{active.engine}</span> </p>
-                          <p className="flex items-center"><FaDoorClosed className="mr-1"/>Portes: <span className="text-yellow-500 ml-1">{active.doors}</span> </p>
-                          <p className="flex items-center"><FaHistory className="mr-1"/>Année: <span className="text-yellow-500 ml-1">{active.year}</span> </p>
-                          </div>
+                    {active.Description} {/* Affiche simplement le contenu */}
+                    <div className="flex justify-center w-full pb-10">
+                      <div className="flex w-full">
+                        <div className="flex-1 mr-5">
+                          <p className="flex items-center"><FaCar className="mr-1"/> Marque: <span className="text-yellow-500 ml-1">{active.Brand}</span> </p>
+                          <p className="flex items-center"><FaCarSide className="mr-1"/>Modèle: <span className="text-yellow-500 ml-1">{active.Model}</span> </p>
+                          <p className="flex items-center"><FaEuroSign className="mr-1"/>Prix: <span className="text-yellow-500 ml-1">{active.Price}</span> </p>
+                          <p className="flex items-center"><FaTachometerAlt className="mr-1"/>Kilométrage: <span className="text-yellow-500 ml-1">{active.Kilometers}</span> </p>
+                          <p className="flex items-center"><FaPaintRoller className="mr-1"/>Couleur: <span className="text-yellow-500 ml-1">{active.Color}</span> </p>
+                        </div>
+                        <div className="flex-1">
+                          <p className="flex items-center"><FaGasPump className="mr-1"/>Carburant: <span className="text-yellow-500 ml-1">{active.Fuel}</span> </p>
+                          <p className="flex items-center"><FaSitemap className="mr-1"/>Boite: <span className="text-yellow-500 ml-1">{active.Gearbox}</span> </p>
+                          <p className="flex items-center"><FaGears className="mr-1"/>Moteur: <span className="text-yellow-500 ml-1">{active.Engine}</span> </p>
+                          <p className="flex items-center"><FaDoorClosed className="mr-1"/>Portes: <span className="text-yellow-500 ml-1">{active.Doors}</span> </p>
+                          <p className="flex items-center"><FaHistory className="mr-1"/>Année: <span className="text-yellow-500 ml-1">{active.Year}</span> </p>
                         </div>
                       </div>
+                    </div>
                   </motion.div>
                   
                 </div>
@@ -149,35 +175,35 @@ export function ExpandableCard() {
         ) : null}
       </AnimatePresence>
       <ul className=" relative max-w-7xl mx-auto w-full grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4 mt-10 sm:px-10 px-5">
-        {cataloguecards.map((card, index) => (
+        {catalogueItems.map((item, index) => (
           <motion.div
-            layoutId={`card-${card.title}-${id}`}
-            key={card.title}
-            onClick={() => setActive(card)}
+            layoutId={`card-${item.Nom}-${id}`}
+            key={item.Nom}
+            onClick={() => setActive(item)}
             className="p-4 flex flex-col  hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
           >
           <div className="flex gap-4 flex-col w-full">
-            <motion.div layoutId={`image-${card.title}-${id}`} className="w-11/12 max-w-[375px]">
+            <motion.div layoutId={`image-${item.Nom}-${id}`} className="w-11/12 max-w-[375px]">
               <img
                 width={375}  // Réduction de 25% de la taille par défaut
                 height={225} // Réduction correspondante
-                src={card.src}
-                alt={card.title}
+                src={item.Image}
+                alt={item.Nom}
                 className="rounded-lg object-cover object-top"
               />
               </motion.div>
               <div className="flex justify-center items-center flex-col">
                 <motion.h3
-                  layoutId={`title-${card.title}-${id}`}
+                  layoutId={`title-${item.Nom}-${id}`}
                   className="font-medium text-neutral-800 dark:text-neutral-200 text-center md:text-left text-base"
                 >
-                  {card.title}
+                  {item.Nom}
                 </motion.h3>
                 <motion.p
-                  layoutId={`description-${card.description}-${id}`}
+                  layoutId={`description-${item.Nom}-${id}`}
                   className="text-neutral-600 dark:text-neutral-400 text-center md:text-left text-base"
                 >
-                  {card.description}
+                  {item.Year}
                 </motion.p>
               </div>
             </div>

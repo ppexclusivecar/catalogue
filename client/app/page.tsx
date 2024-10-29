@@ -1,4 +1,3 @@
-import Backend from "@/components/Backend";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import Testimonials from "@/components/Testimonials";

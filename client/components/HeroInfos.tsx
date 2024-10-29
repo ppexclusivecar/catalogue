@@ -1,7 +1,7 @@
 import { Spotlight } from "./ui/Spotlight";
 import { TextGenerateEffect } from "./ui/TextGenerateEffect";
 
-const HeroCatalogue = () => {
+const HeroInfos = () => {
   return (
     <div className="pb-20 pt-36">
       {/**
@@ -46,7 +46,7 @@ const HeroCatalogue = () => {
            *  change md:text-6xl, add more responsive code
            */}
           <TextGenerateEffect
-            words="Decouvrez notre catalogue en avant première"
+            words="Infos"
             className="text-center text-[40px] md:text-5xl lg:text-6xl"
           />
         </div>
@@ -55,4 +55,4 @@ const HeroCatalogue = () => {
   );
 };
 
-export default HeroCatalogue;
+export default HeroInfos;
