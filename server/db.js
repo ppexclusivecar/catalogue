@@ -1,11 +1,12 @@
 const mysql = require('mysql2');
+require('dotenv').config(); // Charger les variables d'environnement
 
 // Créer un pool de connexions pour éviter les fermetures de connexions
 const pool = mysql.createPool({
-  host: '193.203.168.33',
-  user: 'u834646827_eliott_moores',
-  password: 'Arturia808*',
-  database: 'u834646827_PPexclusive',
+  host: process.env.DB_HOST, // Utiliser la variable d'environnement pour l'hôte
+  user: process.env.DB_USER, // Utiliser la variable d'environnement pour l'utilisateur
+  password: process.env.DB_PASSWORD, // Utiliser la variable d'environnement pour le mot de passe
+  database: process.env.DB_NAME, // Utiliser la variable d'environnement pour la base de données
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
