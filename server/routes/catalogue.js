@@ -1,18 +1,25 @@
-
 const express = require('express');
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs'); // Importer fs pour la gestion des fichiers
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const router = express.Router();
 const db = require('../db');
+require('dotenv').config();
 
-// Configuration de multer pour l'upload des images
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../public/uploads/')); // Dossier de destination
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Renommer le fichier pour éviter les doublons
+// Configuration de Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Configuration de multer avec stockage Cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'catalogue', // Nom du dossier dans Cloudinary
+    format: async (req, file) => 'png', // Format des images (optionnel)
+    public_id: (req, file) => Date.now().toString(), // Nom unique pour chaque fichier
   },
 });
 
@@ -46,9 +53,10 @@ router.post('/', upload.single('image'), (req, res) => {
     engine,
     doors,
     year
-  } = req.body; // Récupérer les champs supplémentaires depuis le corps de la requête
+  } = req.body;
 
-  const imagePath = req.file ? req.file.filename : null; // Vérifier si un fichier a été uploadé
+  // Obtenir l'URL de l'image depuis Cloudinary
+  const imagePath = req.file ? req.file.path : null;
 
   const query = `
     INSERT INTO catalogue (
@@ -104,7 +112,6 @@ router.post('/', upload.single('image'), (req, res) => {
 router.delete('/:num', (req, res) => {
   const { num } = req.params;
 
-  // Récupérer l'image à supprimer
   const query = 'SELECT Image FROM catalogue WHERE Num = ?';
   db.query(query, [num], (err, results) => {
     if (err) {
@@ -113,24 +120,26 @@ router.delete('/:num', (req, res) => {
     }
 
     if (results.length > 0) {
-      const imagePath = path.join(__dirname, '../public/uploads/', results[0].Image);
+      const imageUrl = results[0].Image;
+
+      // Extraire le public_id de l'image dans Cloudinary pour la suppression
+      const publicId = imageUrl.split('/').pop().split('.')[0];
 
       // Supprimer l'élément de la base de données
       const deleteQuery = 'DELETE FROM catalogue WHERE Num = ?';
-      db.query(deleteQuery, [num], (deleteErr) => {
+      db.query(deleteQuery, [num], async (deleteErr) => {
         if (deleteErr) {
           console.error('Erreur lors de la suppression de l\'élément:', deleteErr);
           return res.status(500).json({ error: 'Erreur serveur' });
         }
 
-        // Supprimer le fichier image
-        fs.unlink(imagePath, (unlinkErr) => {
-          if (unlinkErr) {
-            console.error('Erreur lors de la suppression de l\'image:', unlinkErr);
-          }
-        });
-
-        res.status(200).json({ message: 'Élément supprimé avec succès' });
+        try {
+          await cloudinary.uploader.destroy(`catalogue/${publicId}`);
+          res.status(200).json({ message: 'Élément supprimé avec succès' });
+        } catch (cloudErr) {
+          console.error('Erreur lors de la suppression de l\'image dans Cloudinary:', cloudErr);
+          res.status(500).json({ error: 'Erreur lors de la suppression de l\'image' });
+        }
       });
     } else {
       res.status(404).json({ error: 'Élément non trouvé' });
