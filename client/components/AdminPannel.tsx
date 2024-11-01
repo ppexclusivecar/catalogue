@@ -191,7 +191,7 @@ export default function AdminPannel() {
       <Link href="./" className="absolute top-4 left-4 text-blue-600 font-semibold hover:underline">
         Accueil
       </Link>
-      <h1 className="text-3xl font-bold text-center mb-2">Ajouter un vehicule au Catalogue</h1>
+      <h1 className="text-3xl font-bold text-center mb-2">Ajouter</h1>
 
       <form onSubmit={handleAddItem} className="flex flex-col gap-2 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -229,7 +229,7 @@ export default function AdminPannel() {
         </div>
       </form>
 
-      <h1 className="text-3xl font-bold text-center mb-2">Modifier les vehicules du Catalogue</h1>
+      <h1 className="text-3xl font-bold text-center mb-2">Modifier</h1>
 
       <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {catalogueItems.map((item) => (
