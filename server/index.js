@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const catalogueRoutes = require('./routes/catalogue');
+const authRoutes = require('./routes/auth');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 
@@ -71,6 +72,9 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
 
 // Routes du catalogue
 app.use('/api/catalogue', catalogueRoutes);
+
+// Route d'authentification
+app.use('/api', authRoutes);
 
 // Démarrer le serveur
 app.listen(PORT, () => {
