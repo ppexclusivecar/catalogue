@@ -1,6 +1,7 @@
 // pages/adminpannel.tsx
 'use client';
 import { useEffect, useState } from 'react';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 // Définir une interface pour les éléments du catalogue
 interface CatalogueItem {
@@ -37,6 +38,8 @@ export default function AdminPannel() {
   const [doors, setDoors] = useState('');
   const [year, setYear] = useState('');
   const [image, setImage] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     fetch('https://ppexclusive-server.vercel.app/api/catalogue')
@@ -49,6 +52,8 @@ export default function AdminPannel() {
 
   const handleAddItem = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
+
     const formData = new FormData();
     formData.append('nom', nom);
     formData.append('description', description);
@@ -72,6 +77,8 @@ export default function AdminPannel() {
       body: formData,
     });
 
+    setIsLoading(false);
+
     if (response.ok) {
       const newItem = await response.json();
       setCatalogueItems((prev) => [...prev, newItem]);
@@ -89,58 +96,99 @@ export default function AdminPannel() {
       setDoors('');
       setYear('');
       setImage(null);
+
+      setShowPopup(true);
+      setTimeout(() => setShowPopup(false), 3000);
     } else {
       console.error("Erreur lors de l'ajout de l'élément");
     }
   };
 
   const handleDeleteItem = async (num: number) => {
+    setIsLoading(true);
+
     const response = await fetch(`https://ppexclusive-server.vercel.app/api/catalogue/${num}`, {
       method: 'DELETE',
     });
 
+    setIsLoading(false);
+
     if (response.ok) {
       setCatalogueItems((prev) => prev.filter((item) => item.Num !== num));
+      setShowPopup(true);
+      setTimeout(() => setShowPopup(false), 3000);
     } else {
       console.error("Erreur lors de la suppression de l'élément");
     }
   };
 
   return (
-    <div className='container'>
-      <h1>Catalogue</h1>
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold text-center mb-2">Ajouter un vehicule au Catalogue</h1>
 
-      <form onSubmit={handleAddItem}>
-        <input type="text" value={nom} onChange={(e) => setNom(e.target.value)} placeholder="Nom" required />
-        <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" required />
-        <input type="text" value={ctaLink} onChange={(e) => setCtaLink(e.target.value)} placeholder="CTA Link" required />
-        <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="Brand" required />
-        <input type="text" value={model} onChange={(e) => setModel(e.target.value)} placeholder="Model" required />
-        <input type="text" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" required />
-        <input type="text" value={kilometers} onChange={(e) => setKilometers(e.target.value)} placeholder="Kilometers" required />
-        <input type="text" value={color} onChange={(e) => setColor(e.target.value)} placeholder="Color" required />
-        <input type="text" value={fuel} onChange={(e) => setFuel(e.target.value)} placeholder="Fuel" required />
-        <input type="text" value={gearbox} onChange={(e) => setGearbox(e.target.value)} placeholder="Gearbox" required />
-        <input type="text" value={engine} onChange={(e) => setEngine(e.target.value)} placeholder="Engine" required />
-        <input type="text" value={doors} onChange={(e) => setDoors(e.target.value)} placeholder="Doors" required />
-        <input type="text" value={year} onChange={(e) => setYear(e.target.value)} placeholder="Year" required />
-        <input type="file" onChange={(e) => setImage(e.target.files ? e.target.files[0] : null)} accept="image/*" required />
-        <button type="submit">Ajouter</button>
+      <form onSubmit={handleAddItem} className="flex flex-col gap-2 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <input type="text" value={nom} onChange={(e) => setNom(e.target.value)} placeholder="Nom" required className="border p-2 rounded" />
+          <input type="text" value={ctaLink} onChange={(e) => setCtaLink(e.target.value)} placeholder="CTA Link" required className="border p-2 rounded" />
+          <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="Brand" required className="border p-2 rounded" />
+          <input type="text" value={model} onChange={(e) => setModel(e.target.value)} placeholder="Model" required className="border p-2 rounded" />
+          <input type="text" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" required className="border p-2 rounded" />
+          <input type="text" value={kilometers} onChange={(e) => setKilometers(e.target.value)} placeholder="Kilometers" required className="border p-2 rounded" />
+          <input type="text" value={color} onChange={(e) => setColor(e.target.value)} placeholder="Color" required className="border p-2 rounded" />
+          <input type="text" value={fuel} onChange={(e) => setFuel(e.target.value)} placeholder="Fuel" required className="border p-2 rounded" />
+          <input type="text" value={gearbox} onChange={(e) => setGearbox(e.target.value)} placeholder="Gearbox" required className="border p-2 rounded" />
+          <input type="text" value={engine} onChange={(e) => setEngine(e.target.value)} placeholder="Engine" required className="border p-2 rounded" />
+          <input type="text" value={doors} onChange={(e) => setDoors(e.target.value)} placeholder="Doors" required className="border p-2 rounded" />
+          <input type="text" value={year} onChange={(e) => setYear(e.target.value)} placeholder="Year" required className="border p-2 rounded" />
+        </div>
+
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Description"
+          required
+          className="border p-2 rounded h-24 resize-none"
+        ></textarea>
+
+        <div className="flex flex-col gap-2">
+          <input type="file" onChange={(e) => setImage(e.target.files ? e.target.files[0] : null)} accept="image/*" required className="border p-2 rounded" />
+          <button
+            type="submit"
+            className="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-blue-600 w-40 mx-auto flex items-center justify-center"
+            disabled={isLoading}
+          >
+            {isLoading ? <AiOutlineLoading3Quarters className="animate-spin mr-2" /> : "Ajouter"}
+          </button>
+        </div>
       </form>
 
-      <ul>
+      <h1 className="text-3xl font-bold text-center mb-2">Modifier les vehicules du Catalogue</h1>
+
+      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {catalogueItems.map((item) => (
-          <li key={item.Num}>
-            <img src={item.Image} alt={item.Nom} style={{ width: '100px', height: '100px' }} />
-            <p>{item.Nom}</p>
-            <p>{item.Description}</p>
-            <p>{item.Brand} {item.Model}</p>
-            <p>{item.Price}</p>
-            <p>{item.Kilometers}</p>
-            <button onClick={() => handleDeleteItem(item.Num)}>Supprimer</button>
+          <li key={item.Num} className="border p-4 rounded flex flex-col items-center">
+            <img src={item.Image} alt={item.Nom} className="w-24 h-24 object-cover mb-2 rounded" />
+            <p className="font-bold text-lg">{item.Nom}</p>
+            <p className="text-sm text-gray-600 mb-2">{item.Description}</p>
+            <p className="text-gray-800">{item.Brand} {item.Model}</p>
+            <p className="text-yellow-500 font-semibold">{item.Price}</p>
+            <p className="text-gray-600 text-sm">{item.Kilometers} km</p>
+            <button
+              onClick={() => handleDeleteItem(item.Num)}
+              className="mt-4 bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 flex items-center justify-center"
+              disabled={isLoading}
+            >
+              {isLoading ? <AiOutlineLoading3Quarters className="animate-spin" /> : "Supprimer"}
+            </button>
           </li>
         ))}
       </ul>
+
+      {showPopup && (
+        <div className="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
+          Action effectuée avec succès !
+        </div>
+      )}
     </div>
   );
 }

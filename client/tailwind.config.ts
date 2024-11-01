@@ -1,4 +1,6 @@
 import type { Config } from "tailwindcss";
+// Import Tailwind PluginAPI type
+import { PluginAPI } from 'tailwindcss/types/config';
 
 const svgToDataUri = require("mini-svg-data-uri");
 
@@ -186,6 +188,17 @@ const config = {
         },
         { values: flattenColorPalette(theme("backgroundColor")), type: "color" }
       );
+    },
+    function ({ addUtilities }: PluginAPI) {
+      addUtilities({
+        '.scrollbar-hide': {
+          '-ms-overflow-style': 'none', /* Internet Explorer and Edge */
+          'scrollbar-width': 'none', /* Firefox */
+        },
+        '.scrollbar-hide::-webkit-scrollbar': {
+          display: 'none', /* Chrome, Safari, Opera */
+        },
+      });
     },
   ],
 } satisfies Config;

@@ -106,7 +106,7 @@ export function ExpandableCard() {
                   height={200}
                   src={active.Image}
                   alt={active.Nom}
-                  className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-cover object-top"
+                  className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-cover object-top scrollbar-hide"
                 />
               </motion.div>
  
@@ -134,7 +134,7 @@ export function ExpandableCard() {
                     exit={{ opacity: 0 }}
                     href={active.CtaLink}
                     target="_blank"
-                    className="px-4 py-3 text-sm rounded-full font-bold bg-yellow-500 text-white"
+                    className="px-4 py-3 text-sm rounded-full font-bold bg-yellow-500 text-white scrollbar-hide"
                   >
                     {'Plus'}
                   </motion.a>
@@ -145,7 +145,7 @@ export function ExpandableCard() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
+                    className="scrollbar-hide text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
                   >
                     {active.Description} {/* Affiche simplement le contenu */}
                     <div className="flex justify-center w-full pb-10">
