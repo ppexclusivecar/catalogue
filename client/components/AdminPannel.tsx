@@ -1,9 +1,10 @@
 // pages/adminpannel.tsx
 'use client';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import Link from 'next/link';
 
-// Définir une interface pour les éléments du catalogue
 interface CatalogueItem {
   Num: number;
   Description: string;
@@ -19,7 +20,7 @@ interface CatalogueItem {
   Engine: string;
   Doors: string;
   Year: string;
-  Image: string; // Cette URL provient de Cloudinary
+  Image: string;
 }
 
 export default function AdminPannel() {
@@ -40,16 +41,73 @@ export default function AdminPannel() {
   const [image, setImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
+  // Fonction de connexion
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('https://ppexclusive-server.vercel.app/api/login', { password });
+      const { token } = response.data;
+      localStorage.setItem('adminToken', token);
+      setIsAuthenticated(true);
+      setError('');
+    } catch {
+      setError('Mot de passe incorrect');
+    }
+  };
+
+  // Vérifie le token au chargement initial de la page côté client uniquement
   useEffect(() => {
-    fetch('https://ppexclusive-server.vercel.app/api/catalogue')
-      .then((res) => res.json())
-      .then((data: CatalogueItem[]) => {
-        setCatalogueItems(data);
-      })
-      .catch((err) => console.error(err));
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('adminToken');
+      if (token) {
+        setIsAuthenticated(true);
+      }
+    }
   }, []);
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchCatalogueItems();
+    }
+  }, [isAuthenticated]);
+
+  const fetchCatalogueItems = async () => {
+    try {
+      const response = await fetch('https://ppexclusive-server.vercel.app/api/catalogue');
+      const data: CatalogueItem[] = await response.json();
+      setCatalogueItems(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Affiche le formulaire de connexion si l'utilisateur n'est pas authentifié
+  if (!isAuthenticated) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <h1 className="text-2xl font-bold mb-4">Accès Administrateur</h1>
+        <form onSubmit={handleLogin} className="flex flex-col gap-3">
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Mot de passe"
+            className="border p-2 rounded"
+          />
+          <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+            Connexion
+          </button>
+          {error && <p className="text-red-500 mt-2">{error}</p>}
+        </form>
+      </div>
+    );
+  }
+
+  // Gestion d'ajout d'item
   const handleAddItem = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
@@ -75,6 +133,9 @@ export default function AdminPannel() {
     const response = await fetch('https://ppexclusive-server.vercel.app/api/catalogue', {
       method: 'POST',
       body: formData,
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+      },
     });
 
     setIsLoading(false);
@@ -109,6 +170,9 @@ export default function AdminPannel() {
 
     const response = await fetch(`https://ppexclusive-server.vercel.app/api/catalogue/${num}`, {
       method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+      }
     });
 
     setIsLoading(false);
@@ -124,6 +188,9 @@ export default function AdminPannel() {
 
   return (
     <div className="container mx-auto p-4">
+      <Link href="./" className="absolute top-4 left-4 text-blue-600 font-semibold hover:underline">
+        Accueil
+      </Link>
       <h1 className="text-3xl font-bold text-center mb-2">Ajouter un vehicule au Catalogue</h1>
 
       <form onSubmit={handleAddItem} className="flex flex-col gap-2 mb-6">
@@ -166,20 +233,25 @@ export default function AdminPannel() {
 
       <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {catalogueItems.map((item) => (
-          <li key={item.Num} className="border p-4 rounded flex flex-col items-center">
+          <li key={item.Num} className="items-center border p-4 rounded flex flex-col h-full">
             <img src={item.Image} alt={item.Nom} className="w-24 h-24 object-cover mb-2 rounded" />
             <p className="font-bold text-lg">{item.Nom}</p>
-            <p className="text-sm text-gray-600 mb-2">{item.Description}</p>
-            <p className="text-gray-800">{item.Brand} {item.Model}</p>
-            <p className="text-yellow-500 font-semibold">{item.Price}</p>
-            <p className="text-gray-600 text-sm">{item.Kilometers} km</p>
-            <button
-              onClick={() => handleDeleteItem(item.Num)}
-              className="mt-4 bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 flex items-center justify-center"
-              disabled={isLoading}
-            >
-              {isLoading ? <AiOutlineLoading3Quarters className="animate-spin" /> : "Supprimer"}
-            </button>
+            <p className="text-sm text-gray-600 mb-2">
+              {item.Description.length > 50 ? `${item.Description.substring(0, 50)}...` : item.Description}
+            </p>
+
+            <div className="mt-auto flex flex-col items-center">
+              <p className="text-gray-800">{item.Brand} {item.Model}</p>
+              <p className="text-yellow-500 font-semibold">{item.Price}</p>
+              <p className="text-gray-600 text-sm">{item.Kilometers} km</p>
+              <button
+                onClick={() => handleDeleteItem(item.Num)}
+                className="mt-2 bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 flex items-center justify-center"
+                disabled={isLoading}
+              >
+                {isLoading ? <AiOutlineLoading3Quarters className="animate-spin" /> : "Supprimer"}
+              </button>
+            </div>
           </li>
         ))}
       </ul>
@@ -191,4 +263,5 @@ export default function AdminPannel() {
       )}
     </div>
   );
+
 }
