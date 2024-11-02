@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const navItems = [
-    {name: "Acceuil", link: "./"},
+    {name: "Accueil", link: "./"},
     {name: "Catalogue", link: "./catalogue/"},
     {name: "Ventes", link: "./ventes"},
     {name: "Infos", link: "./infos"},
