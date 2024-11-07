@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const catalogueRoutes = require('./routes/catalogue');
+const archiveRoutes = require('./routes/archive');
 const authRoutes = require('./routes/auth');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
@@ -72,6 +73,9 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
 
 // Routes du catalogue
 app.use('/api/catalogue', catalogueRoutes);
+
+// Routes pour la table "archive"
+app.use('/api/archive', archiveRoutes); 
 
 // Route d'authentification
 app.use('/api', authRoutes);
