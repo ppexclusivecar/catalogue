@@ -73,9 +73,6 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
 // Routes du catalogue
 app.use('/api/catalogue', catalogueRoutes);
 
-// Routes pour la table "archive"
-app.use('/api/catalogue/archive', archiveRoutes); 
-
 // Route d'authentification
 app.use('/api', authRoutes);
 
