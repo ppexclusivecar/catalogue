@@ -68,7 +68,7 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
         if (removeBackground) {
           // Générer l'URL de l'image avec l'effet de suppression de fond si la case est cochée
           transformedImageUrl = cloudinary.url(result.public_id, {
-            effect: "background_removal",
+            transformation: [{ effect: 'background_removal' }],
             format: result.format // Optionnel, pour conserver le format
           });
         } else {
@@ -85,6 +85,7 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
     res.status(500).json({ error: 'Erreur lors de l\'upload de l\'image' });
   }
 });
+
 
 
 // Routes du catalogue
