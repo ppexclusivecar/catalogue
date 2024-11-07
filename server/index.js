@@ -48,22 +48,30 @@ app.post('/api/data', (req, res) => {
 // Route d'upload d'image vers Cloudinary
 app.post('/api/upload', upload.single('image'), async (req, res) => {
   try {
-    // Vérifiez si un fichier a été envoyé
     if (!req.file) {
       return res.status(400).json({ error: 'Aucun fichier envoyé' });
     }
 
-    // Uploader l'image vers Cloudinary à partir du buffer
-    const result = await cloudinary.uploader.upload_stream(
-      { resource_type: 'image' },
+    // Uploader l'image avec la transformation de suppression de fond
+    cloudinary.uploader.upload_stream(
+      {
+        resource_type: 'image',
+        transformation: [
+          {
+            effect: 'background_removal',
+          },
+        ],
+      },
       (error, result) => {
         if (error) {
+          console.error('Erreur lors de l\'upload de l\'image:', error);
           return res.status(500).json({ error: 'Erreur lors de l\'upload de l\'image' });
         }
-        // Renvoyer l'URL sécurisée de l'image
+
+        // Renvoyer l'URL de l'image transformée
         res.json({ imageUrl: result.secure_url });
       }
-    ).end(req.file.buffer); // Utiliser le buffer pour uploader l'image
+    ).end(req.file.buffer);
   } catch (error) {
     console.error('Erreur lors de l\'upload vers Cloudinary:', error);
     res.status(500).json({ error: 'Erreur lors de l\'upload de l\'image' });

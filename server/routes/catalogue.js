@@ -221,24 +221,52 @@ router.post('/archive/:num', (req, res) => {
   });
 });
 
-// Route pour supprimer un élément de la table "archive"
+// Route pour supprimer un élément de la table "archive" et l'image associée sur Cloudinary
 router.delete('/archive/:num', (req, res) => {
   const { num } = req.params;
 
-  const query = 'DELETE FROM archive WHERE Num = ?';
-  db.query(query, [num], (err, results) => {
+  // Récupérer l'URL de l'image avant de supprimer l'élément
+  const selectQuery = 'SELECT Image FROM archive WHERE Num = ?';
+  db.query(selectQuery, [num], (err, results) => {
     if (err) {
-      console.error('Erreur lors de la suppression de l\'élément de la table archive:', err);
+      console.error('Erreur lors de la récupération de l\'image:', err);
       return res.status(500).json({ error: 'Erreur serveur' });
     }
 
-    if (results.affectedRows > 0) {
-      res.status(200).json({ message: 'Élément supprimé avec succès' });
+    if (results.length > 0) {
+      const imageUrl = results[0].Image;
+
+      // Extraire le public_id de l'image à partir de l'URL
+      const publicId = imageUrl.split('/').pop().split('.')[0];
+
+      // Supprimer l'image de Cloudinary
+      cloudinary.uploader.destroy(publicId, (error, result) => {
+        if (error) {
+          console.error('Erreur lors de la suppression de l\'image de Cloudinary:', error);
+          return res.status(500).json({ error: 'Erreur lors de la suppression de l\'image' });
+        }
+
+        // Supprimer l'élément de la table "archive" après la suppression de l'image
+        const deleteQuery = 'DELETE FROM archive WHERE Num = ?';
+        db.query(deleteQuery, [num], (deleteErr, deleteResults) => {
+          if (deleteErr) {
+            console.error('Erreur lors de la suppression de l\'élément de la table archive:', deleteErr);
+            return res.status(500).json({ error: 'Erreur serveur' });
+          }
+
+          if (deleteResults.affectedRows > 0) {
+            res.status(200).json({ message: 'Élément et image supprimés avec succès' });
+          } else {
+            res.status(404).json({ error: 'Élément non trouvé' });
+          }
+        });
+      });
     } else {
       res.status(404).json({ error: 'Élément non trouvé' });
     }
   });
 });
+
 
 module.exports = router;
 
