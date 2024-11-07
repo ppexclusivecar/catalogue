@@ -52,24 +52,32 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
       return res.status(400).json({ error: 'Aucun fichier envoyé' });
     }
 
-    // Uploader l'image avec la transformation de suppression de fond
+    // Lire la valeur de la case à cocher
+    const removeBackground = req.body.removeBackground === 'true';
+
+    // Uploader l'image sans transformation initiale
     cloudinary.uploader.upload_stream(
-      {
-        resource_type: 'image',
-        transformation: [
-          {
-            effect: 'background_removal',
-          },
-        ],
-      },
+      { resource_type: 'image' },
       (error, result) => {
         if (error) {
           console.error('Erreur lors de l\'upload de l\'image:', error);
           return res.status(500).json({ error: 'Erreur lors de l\'upload de l\'image' });
         }
 
-        // Renvoyer l'URL de l'image transformée
-        res.json({ imageUrl: result.secure_url });
+        let transformedImageUrl;
+        if (removeBackground) {
+          // Générer l'URL de l'image avec l'effet de suppression de fond si la case est cochée
+          transformedImageUrl = cloudinary.url(result.public_id, {
+            effect: "background_removal",
+            format: result.format // Optionnel, pour conserver le format
+          });
+        } else {
+          // Générer l'URL de l'image sans transformation
+          transformedImageUrl = result.secure_url;
+        }
+
+        // Renvoyer l'URL de l'image (transformée ou non)
+        res.json({ imageUrl: transformedImageUrl });
       }
     ).end(req.file.buffer);
   } catch (error) {
@@ -77,6 +85,7 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
     res.status(500).json({ error: 'Erreur lors de l\'upload de l\'image' });
   }
 });
+
 
 // Routes du catalogue
 app.use('/api/catalogue', catalogueRoutes);
