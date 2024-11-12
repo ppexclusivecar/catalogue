@@ -55,31 +55,28 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
     // Lire la valeur de la case à cocher
     const removeBackground = req.body.removeBackground === 'true';
 
-    // Uploader l'image sans transformation initiale
-    cloudinary.uploader.upload_stream(
-      { resource_type: 'image' },
-      (error, result) => {
-        if (error) {
-          console.error('Erreur lors de l\'upload de l\'image:', error);
-          return res.status(500).json({ error: 'Erreur lors de l\'upload de l\'image' });
-        }
+    // Configurer les options d'upload
+    const uploadOptions = {
+      resource_type: 'image',
+      format: 'png', // Utilisation de png pour conserver la transparence si le fond est supprimé
+    };
 
-        let transformedImageUrl;
-        if (removeBackground) {
-          // Générer l'URL de l'image avec l'effet de suppression de fond si la case est cochée
-          transformedImageUrl = cloudinary.url(result.public_id, {
-            transformation: [{ effect: 'e_background_removal' }],
-            format: result.format // Optionnel, pour conserver le format
-          });
-        } else {
-          // Générer l'URL de l'image sans transformation
-          transformedImageUrl = result.secure_url;
-        }
+    // Appliquer l'effet de suppression de fond si la case est cochée
+    if (removeBackground) {
+      uploadOptions.transformation = [{ effect: 'background_removal' }];
+    }
 
-        // Renvoyer l'URL de l'image (transformée ou non)
-        res.json({ imageUrl: transformedImageUrl });
+    // Uploader l'image avec ou sans transformation
+    cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
+      if (error) {
+        console.error('Erreur lors de l\'upload de l\'image:', error);
+        return res.status(500).json({ error: 'Erreur lors de l\'upload de l\'image' });
       }
-    ).end(req.file.buffer);
+
+      // Renvoyer l'URL de l'image uploadée
+      res.json({ imageUrl: result.secure_url });
+    }).end(req.file.buffer);
+
   } catch (error) {
     console.error('Erreur lors de l\'upload vers Cloudinary:', error);
     res.status(500).json({ error: 'Erreur lors de l\'upload de l\'image' });
