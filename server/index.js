@@ -52,36 +52,30 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
       return res.status(400).json({ error: 'Aucun fichier envoyé' });
     }
 
-    // Lire la valeur de la case à cocher
-    const removeBackground = req.body.removeBackground === 'true';
+    // Uploader l'image avec transformation pour suppression de fond
+    cloudinary.uploader.upload_stream(
+      {
+        resource_type: 'image',
+        transformation: [{ effect: 'background_removal' }],
+        format: 'png' // Utiliser le format PNG pour conserver la transparence
+      },
+      (error, result) => {
+        if (error) {
+          console.error("Erreur lors de l'upload de l'image:", error);
+          return res.status(500).json({ error: "Erreur lors de l'upload de l'image" });
+        }
 
-    // Configurer les options d'upload
-    const uploadOptions = {
-      resource_type: 'image',
-      format: 'png', // Utilisation de png pour conserver la transparence si le fond est supprimé
-    };
-
-    // Appliquer l'effet de suppression de fond si la case est cochée
-    if (removeBackground) {
-      uploadOptions.transformation = [{ effect: 'background_removal' }];
-    }
-
-    // Uploader l'image avec ou sans transformation
-    cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
-      if (error) {
-        console.error('Erreur lors de l\'upload de l\'image:', error);
-        return res.status(500).json({ error: 'Erreur lors de l\'upload de l\'image' });
+        // Renvoyer l'URL de l'image avec fond supprimé
+        res.json({ imageUrl: result.secure_url });
       }
-
-      // Renvoyer l'URL de l'image uploadée
-      res.json({ imageUrl: result.secure_url });
-    }).end(req.file.buffer);
+    ).end(req.file.buffer);
 
   } catch (error) {
-    console.error('Erreur lors de l\'upload vers Cloudinary:', error);
-    res.status(500).json({ error: 'Erreur lors de l\'upload de l\'image' });
+    console.error("Erreur lors de l'upload vers Cloudinary:", error);
+    res.status(500).json({ error: "Erreur lors de l'upload de l'image" });
   }
 });
+
 
 
 
