@@ -45,34 +45,42 @@ app.post('/api/data', (req, res) => {
   res.json({ message: 'Données reçues', data });
 });
 
-// Route d'upload d'image vers Cloudinary
+// Route d'upload avec suppression de fond en utilisant l'API Admin de Cloudinary
 app.post('/api/upload', upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'Aucun fichier envoyé' });
     }
 
-    // Uploader l'image avec transformation pour suppression de fond
+    // Étape 1 : Uploader l'image sans transformation
     cloudinary.uploader.upload_stream(
-      {
-        resource_type: 'image',
-        transformation: [{ effect: 'background_removal' }],
-        format: 'png' // Utiliser le format PNG pour conserver la transparence
-      },
-      (error, result) => {
+      { resource_type: 'image', format: 'png' },
+      async (error, uploadResult) => {
         if (error) {
           console.error("Erreur lors de l'upload de l'image:", error);
           return res.status(500).json({ error: "Erreur lors de l'upload de l'image" });
         }
 
-        // Renvoyer l'URL de l'image avec fond supprimé
-        res.json({ imageUrl: result.secure_url });
+        // Étape 2 : Appliquer la suppression de fond avec l'API Admin
+        try {
+          const updatedImage = await cloudinary.api.update(uploadResult.public_id, {
+            background_removal: "cloudinary_ai",
+          });
+
+          console.log("URL de l'image avec fond supprimé:", updatedImage.secure_url);
+          // Renvoyer l'URL de l'image transformée avec fond supprimé
+          res.json({ imageUrl: updatedImage.secure_url });
+
+        } catch (updateError) {
+          console.error("Erreur lors de la suppression du fond:", updateError);
+          res.status(500).json({ error: "Erreur lors de la suppression du fond de l'image" });
+        }
       }
     ).end(req.file.buffer);
 
   } catch (error) {
-    console.error("Erreur lors de l'upload vers Cloudinary:", error);
-    res.status(500).json({ error: "Erreur lors de l'upload de l'image" });
+    console.error("Erreur lors du traitement de l'image:", error);
+    res.status(500).json({ error: "Erreur lors du traitement de l'image" });
   }
 });
 
