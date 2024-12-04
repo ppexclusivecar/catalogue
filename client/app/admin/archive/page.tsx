@@ -40,7 +40,7 @@ export default function Archive() {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://server-psi-olive-46.vercel.app/api/login', { password });
+      const response = await axios.post('https://server-gilt-ten.vercel.app/api/login', { password });
       const { token } = response.data;
       localStorage.setItem('adminToken', token);
       setIsAuthenticated(true);
@@ -54,7 +54,7 @@ export default function Archive() {
     if (isAuthenticated) {
       const fetchArchiveItems = async () => {
         try {
-          const response = await fetch('https://server-psi-olive-46.vercel.app/api/catalogue/archive');
+          const response = await fetch('https://server-gilt-ten.vercel.app/api/catalogue/archive');
           const data: ArchiveItem[] = await response.json();
           setArchiveItems(data);
         } catch (err) {
@@ -88,7 +88,7 @@ export default function Archive() {
 
   const handleDeleteArchiveItem = async (num: number) => {
     setIsLoading(true);
-    const response = await fetch(`https://server-psi-olive-46.vercel.app/api/catalogue/archive/${num}`, {
+    const response = await fetch(`https://server-gilt-ten.vercel.app/api/catalogue/archive/${num}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,

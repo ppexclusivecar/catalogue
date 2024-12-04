@@ -40,7 +40,7 @@ export default function Ajouter() {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://server-psi-olive-46.vercel.app/api/login', { password });
+      const response = await axios.post('https://server-gilt-ten.vercel.app/api/login', { password });
       const { token } = response.data;
       localStorage.setItem('adminToken', token);
       setIsAuthenticated(true);
@@ -94,7 +94,7 @@ export default function Ajouter() {
     }
     formData.append('removeBackground', removeBackground.toString()); // Ajouter l'info sur la suppression de l'arrière-plan
 
-    const response = await fetch('https://server-psi-olive-46.vercel.app/api/catalogue', {
+    const response = await fetch('https://server-gilt-ten.vercel.app/api/catalogue', {
       method: 'POST',
       body: formData,
       headers: {

@@ -20,7 +20,7 @@ export default function AdminPannel() {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://server-psi-olive-46.vercel.app/api/login', { password });
+      const response = await axios.post('https://server-gilt-ten.vercel.app/api/login', { password });
       const { token } = response.data;
       localStorage.setItem('adminToken', token);
       setIsAuthenticated(true);
