@@ -1,6 +1,6 @@
-// backend/index.js
+// backend/index.js 2.0
 const express = require('express');
-const cors = require('cors');
+const cors = require('cors'); 
 const catalogueRoutes = require('./routes/catalogue');
 const authRoutes = require('./routes/auth');
 const cloudinary = require('cloudinary').v2;
