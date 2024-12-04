@@ -4,7 +4,7 @@ const Footer_light = () => {
   return (
     <footer className="w-full pt-20 pb-10 px-10">
       {/* background grid */}
-      <div className=" z-40 w-full absolute left-0 -bottom-72 min-h-96">
+      <div className="w-full relative">
         <img
           src="/footer-grid.svg"
           alt="grid"
