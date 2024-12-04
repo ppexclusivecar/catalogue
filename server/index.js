@@ -24,7 +24,11 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'https://client-neon-iota.vercel.app', // Remplacez par l'URL de votre frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Méthodes autorisées
+  credentials: true // Si vous utilisez des cookies ou des authentifications
+}));
 app.use(express.json());
 
 // Servir les fichiers statiques du dossier 'public' pour d'autres assets, si besoin
