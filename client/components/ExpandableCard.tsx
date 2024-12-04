@@ -27,7 +27,7 @@ export function ExpandableCard() {
   const [catalogueItems, setCatalogueItems] = useState<CatalogueItem[]>([]);
 
   useEffect(() => {
-    fetch('https://server-psi-olive-46.vercel.app/api/catalogue')
+    fetch('https://ppexclusive-server.vercel.app/api/catalogue')
       .then((res) => res.json())
       .then((data: CatalogueItem[]) => {
         setCatalogueItems(data);
