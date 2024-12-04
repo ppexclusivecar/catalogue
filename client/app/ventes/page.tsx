@@ -2,6 +2,7 @@ import Footer_light from "@/components/Footer_light";
 import HeroInfos from "@/components/HeroInfos";
 import HeroVentes from "@/components/HeroVentes";
 import { FloatingNav } from "@/components/ui/FloatingNav";
+import { Ventes } from "@/components/Ventes";
 import { navItems } from "@/data";
 
 export default function Home() {
@@ -10,6 +11,7 @@ export default function Home() {
       <div className="max-w-7xl w-full">
         <FloatingNav navItems={navItems} />
         <HeroVentes />
+        <Ventes/>
         <Footer_light/>
       </div>
     </main>

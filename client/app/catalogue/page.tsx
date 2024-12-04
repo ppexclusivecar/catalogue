@@ -11,6 +11,7 @@ export default function Home() {
         <FloatingNav navItems={navItems} />
         <HeroCatalogue/>
         <ExpandableCard/>
+        <Footer_light/>
       </div>
     </main>
   );
