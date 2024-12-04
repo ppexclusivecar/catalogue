@@ -27,7 +27,7 @@ export function Ventes() {
   const [catalogueItems, setCatalogueItems] = useState<CatalogueItem[]>([]);
 
   useEffect(() => {
-    fetch('https://server-gilt-ten.vercel.app/api/archive')
+    fetch('https://server-gilt-ten.vercel.app/api/catalogue/archive')
       .then((res) => res.json())
       .then((data: CatalogueItem[]) => {
         setCatalogueItems(data);

@@ -50,7 +50,7 @@ const Hero = () => {
            *  change md:text-6xl, add more responsive code
            */}
           <TextGenerateEffect
-            words="Bienvenue chez P&P Exclusive Cars"
+            words="Bienvenue chez P&P Exclusive Car"
             className="text-center text-[40px] md:text-5xl lg:text-6xl"
           />
 

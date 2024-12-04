@@ -6,7 +6,7 @@ import GridGlobe from "./ui/GridGlobe";
 
 const Footer_light = () => {
   return (
-    <footer className="w-full pt-20 pb-10 px-10" id="contact">
+    <footer className="-z-50 w-full pt-20 pb-10 px-10" id="contact">
       {/* background grid */}
       <div id="contact" className="w-full absolute left-0 -bottom-72 min-h-96">
         <img
