@@ -6,13 +6,13 @@ import GridGlobe from "./ui/GridGlobe";
 
 const Footer_light = () => {
   return (
-    <footer className="-z-50 w-full pt-20 pb-10 px-10" id="contact">
+    <footer className="fixed bottom-0 left-0 w-full z-10 pt-20 pb-10 px-10 bg-black-100" id="contact">
       {/* background grid */}
       <div id="contact" className="w-full absolute left-0 -bottom-72 min-h-96">
         <img
           src="/footer-grid.svg"
           alt="grid"
-          className="w-full h-full opacity-50 "
+          className="w-full h-full opacity-50"
         />
       </div>
       <div className="flex mt-16 md:flex-row flex-col justify-between items-center">

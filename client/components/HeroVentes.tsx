@@ -1,9 +1,9 @@
 import { Spotlight } from "./ui/Spotlight";
 import { TextGenerateEffect } from "./ui/TextGenerateEffect";
 
-const HeroVentes = () => {
+const HeroCatalogue = () => {
   return (
-    <div className="h-screen pb-20 pt-36">
+    <div className="pb-20 pt-36">
       {/**
        *  UI: Spotlights
        *  Link: https://ui.aceternity.com/components/spotlight
@@ -46,7 +46,7 @@ const HeroVentes = () => {
            *  change md:text-6xl, add more responsive code
            */}
           <TextGenerateEffect
-            words="Nos Dernières ventes"
+            words="Dernières Ventes"
             className="text-center text-[40px] md:text-5xl lg:text-6xl"
           />
         </div>
@@ -55,4 +55,4 @@ const HeroVentes = () => {
   );
 };
 
-export default HeroVentes;
+export default HeroCatalogue;
