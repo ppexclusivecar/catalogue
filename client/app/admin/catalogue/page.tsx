@@ -40,7 +40,7 @@ export default function Catalogue() {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://ppexclusive-server.vercel.app/api/login', { password });
+      const response = await axios.post('https://server-psi-olive-46.vercel.app/api/login', { password });
       const { token } = response.data;
       localStorage.setItem('adminToken', token);
       setIsAuthenticated(true);
@@ -54,7 +54,7 @@ export default function Catalogue() {
     if (isAuthenticated) {
       const fetchCatalogueItems = async () => {
         try {
-          const response = await fetch('https://ppexclusive-server.vercel.app/api/catalogue');
+          const response = await fetch('https://server-psi-olive-46.vercel.app/api/catalogue');
           const data: CatalogueItem[] = await response.json();
           setCatalogueItems(data);
         } catch (err) {
@@ -88,7 +88,7 @@ export default function Catalogue() {
 
   const handleDeleteItem = async (num: number) => {
     setIsLoading(true);
-    const response = await fetch(`https://ppexclusive-server.vercel.app/api/catalogue/${num}`, {
+    const response = await fetch(`https://server-psi-olive-46.vercel.app/api/catalogue/${num}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,
@@ -104,7 +104,7 @@ export default function Catalogue() {
 
   const handleArchiveItem = async (num: number) => {
     setIsLoading(true);
-    const response = await fetch(`https://ppexclusive-server.vercel.app/api/catalogue/archive/${num}`, {
+    const response = await fetch(`https://server-psi-olive-46.vercel.app/api/catalogue/archive/${num}`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,
