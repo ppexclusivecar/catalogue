@@ -24,7 +24,17 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // Middleware
-app.use(cors());
+const allowedOrigins = ['https://client-neon-iota.vercel.app', 'https://ppexclusivecars.com'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
 app.use(express.json());
 
 // Servir les fichiers statiques du dossier 'public' pour d'autres assets, si besoin
