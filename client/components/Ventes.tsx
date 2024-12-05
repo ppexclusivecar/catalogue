@@ -173,7 +173,7 @@ export function Ventes() {
           </div>
         ) : null}
       </AnimatePresence>
-      <ul className=" relative max-w-7xl mx-auto w-full grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 xl:grid-cols-4 gap-4 mt-10 sm:px-10 px-5">
+      <ul className=" relative max-w-7xl mx-auto w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4 mt-10 sm:px-10 px-5">
         {catalogueItems.map((item, index) => (
           <motion.div
             layoutId={`card-${item.Nom}-${id}`}
