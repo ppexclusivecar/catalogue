@@ -3,7 +3,7 @@ import { TextGenerateEffect } from "./ui/TextGenerateEffect";
 
 const HeroCatalogue = () => {
   return (
-    <div className="pb-20 pt-36">
+    <div className="min-h-screen pb-20 pt-36">
       {/**
        *  UI: Spotlights
        *  Link: https://ui.aceternity.com/components/spotlight
@@ -46,7 +46,7 @@ const HeroCatalogue = () => {
            *  change md:text-6xl, add more responsive code
            */}
           <TextGenerateEffect
-            words="Dernières Ventes"
+            words="Dernières Ventes "
             className="text-center text-[40px] md:text-5xl lg:text-6xl"
           />
         </div>

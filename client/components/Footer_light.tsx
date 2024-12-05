@@ -2,20 +2,19 @@ import { socialMedia } from "@/data";
 
 const Footer_light = () => {
   return (
-    <footer className="w-full pt-20 pb-10 px-10">
+    <footer className="relative w-full pt-4 pb-4 px-10">
       {/* background grid */}
-      <div className="w-full relative">
+      <div className="absolute inset-0 w-full h-full">
         <img
           src="/footer-grid.svg"
           alt="grid"
-          className="w-full h-full opacity-50 "
+          className="w-full h-full object-cover opacity-50"
         />
       </div>
-      <div className="flex mt-16 md:flex-row flex-col justify-between items-center">
+      <div className="relative flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="md:text-base text-sm md:font-normal font-light">
           Copyright © 2024 P&P Exclusive Cars. Tous droits réservés.
         </p>
-
         <div className="flex items-center md:gap-3 gap-6">
           {socialMedia.map((info) => (
             <div
