@@ -123,7 +123,7 @@ export default function Catalogue() {
           {/* Bouton Retour */}
     <button
       onClick={() => (window.location.href = 'https://ppexclusivecars.com/admin')} // Redirection explicite
-      className="absolute top-4 right-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+      className="absolute top-4 left-4 bg-yellow-500 text-white py-2 px-4 rounded hover:bg-blue-600"
     >
       Retour
     </button>
