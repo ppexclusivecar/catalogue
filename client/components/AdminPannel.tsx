@@ -53,6 +53,13 @@ export default function AdminPannel() {
 
   return (
     <div className="container mx-auto p-4">
+                {/* Bouton Retour */}
+    <button
+      onClick={() => (window.location.href = 'https://ppexclusivecars.com')} // Redirection explicite
+      className="absolute top-4 left-4 bg-yellow-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+    >
+      Accueil
+    </button>
       <h1 className="text-3xl font-bold text-center mb-4">Admin Panel</h1>
       <div className="flex flex-col items-center gap-4">
         <Link href="/admin/ajouter" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 w-1/3 text-center">
