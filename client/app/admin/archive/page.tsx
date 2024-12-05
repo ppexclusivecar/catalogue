@@ -104,6 +104,13 @@ export default function Archive() {
 
   return (
     <div className="container mx-auto p-4">
+    {/* Bouton Retour */}
+    <button
+      onClick={() => (window.location.href = 'https://ppexclusivecars.com/admin')} // Redirection explicite
+      className="absolute top-4 right-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+    >
+      Retour
+    </button>
       <h1 className="text-3xl font-bold text-center mb-2">Archive</h1>
 
       <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
