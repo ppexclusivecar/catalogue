@@ -132,11 +132,10 @@ export function Ventes() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    href={active.CtaLink}
                     target="_blank"
-                    className="px-4 py-3 text-sm rounded-full font-bold bg-yellow-500 text-white scrollbar-hide"
+                    className="px-4 py-3 text-sm rounded-full font-bold bg-green-600 text-white scrollbar-hide"
                   >
-                    {'Plus'}
+                    {'Vendu !'}
                   </motion.a>
                 </div>
                 <div className="pt-4 relative px-4">
